@@ -77,7 +77,7 @@
 
       * Make sure your element is self-contained and ships with all its dependencies.
       * Are all paths relative to required resources (images, etc.) relative to the component source?
-      * The elements doesn’t depend on anything else (or any other element) being loaded before.
+      * The elements don't depend on anything else (or any other element) being loaded before.
 
     3. **Use events to pass data to the outside world**. All custom elements
     inherit from EventTarget, and thus events can be used to pass data along,
@@ -85,8 +85,9 @@
     [DOM Living Standard §2.11](https://dom.spec.whatwg.org/#action-versus-occurance). See also
     the TAG’s guidance on [event design](https://w3ctag.github.io/design-principles/#event-design).
 
-      * One way to structure your elements for usability is
-      [“data down, events up”](https://github.com/google/uniflow-polymer)
+      * One way to structure your elements for usability is the "data down, events up" flow
+      pattern, e.g. sending data down the DOM tree by setting properties/attributes on elements,
+      and dispatching events, which bubble up the tree.
 
     4. **Use attributes to receive non-complex data**. Elements are configured
     declaratively as much as possible, which allows them to be used
@@ -97,7 +98,8 @@
        `<my-element selected></my-element>` instead of
        `<my-element selected="true"></my-element>`.
        * Don’t use custom attributes for styling, like `bgcolor`.
-         Instead use Custom Properties or CSS Shadow Parts.
+         Instead use [Custom Properties](https://drafts.csswg.org/css-variables)
+         or [CSS Shadow Parts](https://drafts.csswg.org/css-shadow-parts/).
        * If elements accept complex data like objects, arrays or streams,
          create a JavaScript API to deal with these.
 

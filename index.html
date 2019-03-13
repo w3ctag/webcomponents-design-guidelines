@@ -55,9 +55,9 @@
     ## Common patterns
 
     The web platform is not known for being 100% consistent, but there are
-    definitely some recognizable patterns across the platform, like with regard
+    definitely some recognizable patterns across the platform, such as with regard
     to naming. Try to stay consistent with what is already used, like if other
-    elements uses “selected” as an attribute for the same behavior, there is
+    elements use “selected” as an attribute for the same behavior, there is
     no reason to start using something else (say, “chosen” or “marked”).
 
     ### Native HTML elements
@@ -69,15 +69,15 @@
     don’t throw errors during construction or using regular DOM interactions.
 
       > For example, they don’t strictly enforce their content model. You can
-      easily add a `div` element inside an `img` element even if that means it won’t
-      render or behave properly, it should never throw.
+      easily add a `div` element inside an `img` element, and even if that means 
+      it won’t render or behave properly, it should never throw.
 
     2. **Elements are self-contained**. Elements come as part of the web platform
     and thus will work without requiring any other libraries.
 
       * Make sure your element is self-contained and ships with all its dependencies.
       * Are all paths relative to required resources (images, etc.) relative to the component source?
-      * The elements don't depend on anything else (or any other element) being loaded before.
+      * The elements don't depend on anything else (or any other element) being loaded beforehand.
 
     3. **Use events to pass data to the outside world**. All custom elements
     inherit from EventTarget, and thus events can be used to pass data along,
@@ -94,13 +94,13 @@
     declaratively, as well as work great with template bindings.
 
        There are a few things to keep in mind though
-       * Use boolean attributes for boolean values, ie
+       * Use boolean attributes for boolean values, i.e.
        `<my-element selected></my-element>` instead of
        `<my-element selected="true"></my-element>`.
        * Don’t use custom attributes for styling, like `bgcolor`.
          Instead use [Custom Properties](https://drafts.csswg.org/css-variables)
          or [CSS Shadow Parts](https://drafts.csswg.org/css-shadow-parts/).
-       * If elements accept complex data like objects, arrays or streams,
+       * If elements accept complex data such as objects, arrays or streams,
          create a JavaScript API to deal with these.
 
     5. **Interactive elements are focusable**, and can be interacted with
@@ -108,23 +108,23 @@
     elements are accessible.
 
     6. **Elements can be instantiated without being part of the document**.
-    Element can be created from scripts etc before inserted into the document,
-    so don’t assume that document APIs like parentNode will be available
-    before connectedCallback.
+    Elements can be created from scripts etc. before being inserted into 
+    the document, so don’t assume that document APIs such as `parentNode` will 
+    be available before `connectedCallback`.
 
     7. **Elements should only have basic styling**. Native elements are
     implementable by multiple browsers on multiple platforms, so they have
     only generic styling out of the box. Theming of the element might be
     desired, but should be separated out from the essential style of the
     element (and made extensible). Create the simplest style possible—at
-    least as basic, if not more, than existing standard elements. We can
-    call this functional styling in contrast to “theme” like styling.
+    least as basic as, if not more than, existing standard elements. We can
+    call this functional styling in contrast to “theme”-like styling.
 
-      It would not be appropriate to encode a specific UI styling, like
+      It would not be appropriate to encode a specific UI styling, such as
     Material Design (Google) or Cupertino (Apple), into the element.
 
       It is appropriate to create styling hooks to allow elements to be
-    themed to match popular styles, like Material and Cupertino.
+    themed to match popular styles, such as Material and Cupertino.
 
     ### Other considerations
 
@@ -133,7 +133,7 @@
 
     1. **Don’t enforce unnecessary child/parent relationships**. Even
     though your element is intended to be used in conjunction with another
-    element, attempt to make it works as child of any other element, if
+    element, attempt to make it work as a child of any other element, if
     that makes sense.
 
     2. **Avoid using callbacks**. Refer to TAGs guidance on
@@ -143,8 +143,8 @@
 
         Attributes (HTML) form (part of) your declarative API; your prototype
         defines your imperative (JavaScript) API. Try to keep the analogous
-        parts linked whenever possible so a user can modify either with the
-        same effect. (eg. `<my-element opened>` or `this.opened = true`).
+        parts linked whenever possible so a user can modify either to the
+        same effect. (e.g. `<my-element opened>` or `this.opened = true`).
 
         Elements can store values set via attributes or imperative APIs in
         the attribute itself, or in the JavaScript property or elsewhere,

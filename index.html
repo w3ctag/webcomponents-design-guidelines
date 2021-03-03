@@ -42,8 +42,7 @@
 
   <section id="sotd">
     This document has been produced by the
-    [<abbr title="World Wide Web Consortium">W3C </abbr> Technical Architecture
-    Group (TAG)](https://www.w3.org/2001/tag/).
+    [W3C Technical Architecture Group (TAG)](https://www.w3.org/2001/tag/).
 
     Please raise issues on our [issue list](https://github.com/w3ctag/webcomponents-design-guidelines/issues), alternatively, you can send comments on this finding to the publicly archived TAG mailing list
     [www-tag@w3.org](mailto:www-tag@w3.org)
@@ -152,6 +151,7 @@
         and stick to it consistently.
 
        <aside class="note">
+         
          Browsers are internally lazy. They do not store data in
          either attributes or properties, casting to JS or attribute strings
          as needed (and not before). Current Web Component practice forces
@@ -163,6 +163,7 @@
        </aside>
 
        <aside class="note">
+         
          Synchronizing boolean attributes is about the presence of
          the attribute, so testing with hasAttribute is recommended.
        </aside>
@@ -173,6 +174,7 @@
        there will be no name clash.
 
        <aside class="note">
+         
          Current native element don’t support named slots. Though
        shadow DOM allows you to use named slots for your light DOM, there
        is currently no precedent for this with native elements. This might

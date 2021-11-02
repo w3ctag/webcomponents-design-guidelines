@@ -6,10 +6,10 @@
   <script src='https://www.w3.org/Tools/respec/respec-w3c' async class='remove'></script>
   <script class='remove'>
     var respecConfig = {
+      format: "markdown",
       specStatus: "draft-finding",
       shortName: "webcomponents-design-guidelines",
       publishDate: "2018-07-27",
-      format: "markdown",
       editors: [
         { name: "Kenneth Christiansen" }
       ],
@@ -21,178 +21,167 @@
           { value: 'Mailing list', href: 'https://lists.w3.org/Archives/Public/www-tag/'}
         ]
       }],
-      wg: "Technical Architecture Group",
-      wgURI: "https://www.w3.org/2001/tag/",
-      wgPublicList: "www-tag",
-      wgPatentURI: "https://www.w3.org/2001/tag/disclosures",
+      group: "tag",
       edDraftURI: "https://w3ctag.github.io/webcomponents-design-guidelines/"
     };
   </script>
 </head>
 <body>
 
-  <section id="abstract">
-    Web components allow you to create encapsulated custom elements on the web
-    platform, but how can you make sure that those elements actually follow
-    common guidelines in such a way that useful elements fit in well with the
-    rest of the platform? The TAG believes this is important so that users
-    don’t feel like they are dealing with mismatched APIs and also a
-    requirement if any of these elements were to end up in the HTML standard.
-  </section>
+<section id="abstract">
+Web components allow you to create encapsulated custom elements on the web
+platform, but how can you make sure that those elements actually follow
+common guidelines in such a way that useful elements fit in well with the
+rest of the platform? The TAG believes this is important so that users
+don’t feel like they are dealing with mismatched APIs and also a
+requirement if any of these elements were to end up in the HTML standard.
+</section>
 
-  <section id="sotd">
-    This document has been produced by the
-    [<abbr title="World Wide Web Consortium">W3C </abbr> Technical Architecture
-    Group (TAG)](https://www.w3.org/2001/tag/).
+<section id="sotd">
+This document has been produced by the
+[<abbr title="World Wide Web Consortium">W3C </abbr> Technical Architecture
+Group (TAG)](https://www.w3.org/2001/tag/).
 
-    Please raise issues on our [issue list](https://github.com/w3ctag/webcomponents-design-guidelines/issues), alternatively, you can send comments on this finding to the publicly archived TAG mailing list
-    [www-tag@w3.org](mailto:www-tag@w3.org)
-    ([archive](https://lists.w3.org/Archives/Public/www-tag/)).
-  </section>
+Please raise issues on our [issue list](https://github.com/w3ctag/webcomponents-design-guidelines/issues), alternatively, you can send comments on this finding to the publicly archived TAG mailing list
+[www-tag@w3.org](mailto:www-tag@w3.org)
+([archive](https://lists.w3.org/Archives/Public/www-tag/)).
+</section>
 
-  <section id="Recommendations">
+## Common patterns
 
-    ## Common patterns
+The web platform is not known for being 100% consistent, but there are
+definitely some recognizable patterns across the platform, such as with regard
+to naming. Try to stay consistent with what is already used, like if other
+elements use “selected” as an attribute for the same behavior, there is
+no reason to start using something else (say, “chosen” or “marked”).
 
-    The web platform is not known for being 100% consistent, but there are
-    definitely some recognizable patterns across the platform, such as with regard
-    to naming. Try to stay consistent with what is already used, like if other
-    elements use “selected” as an attribute for the same behavior, there is
-    no reason to start using something else (say, “chosen” or “marked”).
+### Native HTML elements
 
-    ### Native HTML elements
+In order to answer that, we need to look how native elements work, and
+what defines them:
 
-    In order to answer that, we need to look how native elements work, and
-    what defines them:
+1. **Elements don’t throw errors when used declaratively**. Native elements
+don’t throw errors during construction or using regular DOM interactions.
 
-    1. **Elements don’t throw errors when used declaratively**. Native elements
-    don’t throw errors during construction or using regular DOM interactions.
+  > For example, they don’t strictly enforce their content model. You can
+  easily add a `div` element inside an `img` element, and even if that means 
+  it won’t render or behave properly, it should never throw.
 
-      > For example, they don’t strictly enforce their content model. You can
-      easily add a `div` element inside an `img` element, and even if that means 
-      it won’t render or behave properly, it should never throw.
+2. **Elements are self-contained**. Elements come as part of the web platform
+and thus will work without requiring any other libraries.
 
-    2. **Elements are self-contained**. Elements come as part of the web platform
-    and thus will work without requiring any other libraries.
+  * Make sure your element is self-contained and ships with all its dependencies.
+  * Are all paths relative to required resources (images, etc.) relative to the component source?
+  * The elements don't depend on anything else (or any other element) being loaded beforehand.
 
-      * Make sure your element is self-contained and ships with all its dependencies.
-      * Are all paths relative to required resources (images, etc.) relative to the component source?
-      * The elements don't depend on anything else (or any other element) being loaded beforehand.
+3. **Use events to pass data to the outside world**. All custom elements
+inherit from EventTarget, and thus events can be used to pass data along,
+but please follow the guidelines in the
+[DOM Living Standard §2.11](https://dom.spec.whatwg.org/#action-versus-occurance). See also
+the TAG’s guidance on [event design](https://w3ctag.github.io/design-principles/#event-design).
 
-    3. **Use events to pass data to the outside world**. All custom elements
-    inherit from EventTarget, and thus events can be used to pass data along,
-    but please follow the guidelines in the
-    [DOM Living Standard §2.11](https://dom.spec.whatwg.org/#action-versus-occurance). See also
-    the TAG’s guidance on [event design](https://w3ctag.github.io/design-principles/#event-design).
+  * One way to structure your elements for usability is the "data down, events up" flow
+  pattern, e.g. sending data down the DOM tree by setting properties/attributes on elements,
+  and dispatching events, which bubble up the tree.
 
-      * One way to structure your elements for usability is the "data down, events up" flow
-      pattern, e.g. sending data down the DOM tree by setting properties/attributes on elements,
-      and dispatching events, which bubble up the tree.
+4. **Use attributes to receive non-complex data**. Elements are configured
+declaratively as much as possible, which allows them to be used
+declaratively, as well as work great with template bindings.
 
-    4. **Use attributes to receive non-complex data**. Elements are configured
-    declaratively as much as possible, which allows them to be used
-    declaratively, as well as work great with template bindings.
+   There are a few things to keep in mind though
+   * Use boolean attributes for boolean values, i.e.
+   `<my-element selected></my-element>` instead of
+   `<my-element selected="true"></my-element>`.
+   * Don’t use custom attributes for styling, like `bgcolor`.
+     Instead use [Custom Properties](https://drafts.csswg.org/css-variables)
+     or [CSS Shadow Parts](https://drafts.csswg.org/css-shadow-parts/).
+   * If elements accept complex data such as objects, arrays or streams,
+     create a JavaScript API to deal with these.
 
-       There are a few things to keep in mind though
-       * Use boolean attributes for boolean values, i.e.
-       `<my-element selected></my-element>` instead of
-       `<my-element selected="true"></my-element>`.
-       * Don’t use custom attributes for styling, like `bgcolor`.
-         Instead use [Custom Properties](https://drafts.csswg.org/css-variables)
-         or [CSS Shadow Parts](https://drafts.csswg.org/css-shadow-parts/).
-       * If elements accept complex data such as objects, arrays or streams,
-         create a JavaScript API to deal with these.
+5. **Interactive elements are focusable**, and can be interacted with
+using a keyboard in addition to mouse/touch. Generally, make sure that
+elements are accessible.
 
-    5. **Interactive elements are focusable**, and can be interacted with
-    using a keyboard in addition to mouse/touch. Generally, make sure that
-    elements are accessible.
+6. **Elements can be instantiated without being part of the document**.
+Elements can be created from scripts etc. before being inserted into 
+the document, so don’t assume that document APIs such as `parentNode` will 
+be available before `connectedCallback`.
 
-    6. **Elements can be instantiated without being part of the document**.
-    Elements can be created from scripts etc. before being inserted into 
-    the document, so don’t assume that document APIs such as `parentNode` will 
-    be available before `connectedCallback`.
+7. **Elements should only have basic styling**. Native elements are
+implementable by multiple browsers on multiple platforms, so they have
+only generic styling out of the box. Theming of the element might be
+desired, but should be separated out from the essential style of the
+element (and made extensible). Create the simplest style possible—at
+least as basic as, if not more than, existing standard elements. We can
+call this functional styling in contrast to “theme”-like styling.
 
-    7. **Elements should only have basic styling**. Native elements are
-    implementable by multiple browsers on multiple platforms, so they have
-    only generic styling out of the box. Theming of the element might be
-    desired, but should be separated out from the essential style of the
-    element (and made extensible). Create the simplest style possible—at
-    least as basic as, if not more than, existing standard elements. We can
-    call this functional styling in contrast to “theme”-like styling.
+  It would not be appropriate to encode a specific UI styling, such as
+  Material Design (Google) or Cupertino (Apple), into the element.
 
-      It would not be appropriate to encode a specific UI styling, such as
-    Material Design (Google) or Cupertino (Apple), into the element.
+  It is appropriate to create styling hooks to allow elements to be
+  themed to match popular styles, such as Material and Cupertino.
 
-      It is appropriate to create styling hooks to allow elements to be
-    themed to match popular styles, such as Material and Cupertino.
+### Other considerations
 
-    ### Other considerations
+Apart from following the properties of native elements, there are a
+lot of other ways to make an element fit well with the web platform.
 
-    Apart from following the properties of native elements, there are a
-    lot of other ways to make an element fit well with the web platform.
+1. **Don’t enforce unnecessary child/parent relationships**. Even
+though your element is intended to be used in conjunction with another
+element, attempt to make it work as a child of any other element, if
+that makes sense.
 
-    1. **Don’t enforce unnecessary child/parent relationships**. Even
-    though your element is intended to be used in conjunction with another
-    element, attempt to make it work as a child of any other element, if
-    that makes sense.
+2. **Avoid using callbacks**. Refer to TAGs guidance on
+[promises](https://w3ctag.github.io/design-principles/#promises).
 
-    2. **Avoid using callbacks**. Refer to TAGs guidance on
-    [promises](https://w3ctag.github.io/design-principles/#promises).
+3. **Harmonize declarative (HTML) and imperative (JavaScript) APIs**.
 
-    3. **Harmonize declarative (HTML) and imperative (JavaScript) APIs**.
+    Attributes (HTML) form (part of) your declarative API; your prototype
+    defines your imperative (JavaScript) API. Try to keep the analogous
+    parts linked whenever possible so a user can modify either to the
+    same effect. (e.g. `<my-element opened>` or `this.opened = true`).
 
-        Attributes (HTML) form (part of) your declarative API; your prototype
-        defines your imperative (JavaScript) API. Try to keep the analogous
-        parts linked whenever possible so a user can modify either to the
-        same effect. (e.g. `<my-element opened>` or `this.opened = true`).
+    Elements can store values set via attributes or imperative APIs in
+    the attribute itself, or in the JavaScript property or elsewhere,
+    but should be consistent. Come up with a plan for state management
+    and stick to it consistently.
 
-        Elements can store values set via attributes or imperative APIs in
-        the attribute itself, or in the JavaScript property or elsewhere,
-        but should be consistent. Come up with a plan for state management
-        and stick to it consistently.
+   <aside class="note">
+     Browsers are internally lazy. They do not store data in
+     either attributes or properties, casting to JS or attribute strings
+     as needed (and not before). Current Web Component practice forces
+     developers into a choice without this set of tools. This can create
+     timing issues if you choose properties as the source-of-truth, or
+     high-cost conversions if you pick attributes. This is a messy choice,
+     and one your elements will need to navigate to balance performance
+     and consistency.
+   </aside>
 
-       <aside class="note">
-         Browsers are internally lazy. They do not store data in
-         either attributes or properties, casting to JS or attribute strings
-         as needed (and not before). Current Web Component practice forces
-         developers into a choice without this set of tools. This can create
-         timing issues if you choose properties as the source-of-truth, or
-         high-cost conversions if you pick attributes. This is a messy choice,
-         and one your elements will need to navigate to balance performance
-         and consistency.
-       </aside>
+   <aside class="note">
+     Synchronizing boolean attributes is about the presence of
+     the attribute, so testing with hasAttribute is recommended.
+   </aside>
 
-       <aside class="note">
-         Synchronizing boolean attributes is about the presence of
-         the attribute, so testing with hasAttribute is recommended.
-       </aside>
+   Custom elements have the requirement that they need to contain a
+   hyphen (-) in their name. That is important, as it means that we
+   can standardize elements by never allowing a hyphen - in that way,
+   there will be no name clash.
 
-       Custom elements have the requirement that they need to contain a
-       hyphen (-) in their name. That is important, as it means that we
-       can standardize elements by never allowing a hyphen - in that way,
-       there will be no name clash.
+   <aside class="note">
+     Current native element don’t support named slots. Though
+   shadow DOM allows you to use named slots for your light DOM, there
+   is currently no precedent for this with native elements. This might
+   change in the future.
+   </aside>
 
-       <aside class="note">
-         Current native element don’t support named slots. Though
-       shadow DOM allows you to use named slots for your light DOM, there
-       is currently no precedent for this with native elements. This might
-       change in the future.
-       </aside>
-  </section>
+## Other resources
 
-  <section>
-    ## Other resources
+[The Gold Standard](https://github.com/webcomponents/gold-standard/wiki)
 
-    [The Gold Standard](https://github.com/webcomponents/gold-standard/wiki)
+## Acknowledgement
 
-  </section>
-
-  <section>
-  ## Acknowledgement
-
-  Thanks to Alex Russell, Sangwhan Moon, David Baron, Domenic Denicola add
-  Travis Leithead for their contributions to this document.
-  </section>
+Thanks to Alex Russell, Sangwhan Moon, David Baron, Domenic Denicola add
+Travis Leithead for their contributions to this document.
 
 </body>
 </html>
